@@ -1,6 +1,7 @@
 import express from "express"
 import bodyParser from "body-parser"
 import { JSONRPCServer } from "json-rpc-2.0";
+import { LamportClock } from "./lamport.js";
 
 const server = new JSONRPCServer();
 
@@ -11,19 +12,23 @@ const server = new JSONRPCServer();
 const loggingServiceUrl = "http://logging-service/json-rpc";
 const invoiceServiceUrl = "http://invoice-service/json-rpc"
 
-server.addMethod("processSale", async ({ productId }) => {
+const lp = new LamportClock();
+
+server.addMethod("processSale", async ({ productId, counter }) => {
   // Log the sale to the logging service
+  console.log('chegou product')
+  lp.update(counter);
   const logRequest = {
     jsonrpc: "2.0",
     method: "logging",
-    params: { message: `Product processed for product ID: ${productId}` },
+    params: { message: `Product processed for product ID: ${productId}`, productId, counter: lp.getCounter() },
     id: 1
   };
 
   const invoiceRequest = {
     jsonrpc: "2.0",
     method: "processInvoice",
-    params: { productId },
+    params: { productId, counter: lp.getCounter() },
     id: 1
   };
 

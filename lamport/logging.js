@@ -8,7 +8,21 @@ const server = new JSONRPCServer();
 // Second parameter is a method itself.
 // A method takes JSON-RPC params and returns a result.
 // It can also return a promise of the result.
-server.addMethod("logging", ({ message }) => console.log(`received message: ${message}`));
+
+const skus = {};
+
+server.addMethod("logging", ({ message, productId, counter }) => {
+
+  if (!skus[productId]) skus[productId] = [];
+  skus[productId].push({ message, productId, counter });
+
+  if (skus[productId].length === 3) {
+    skus[productId].sort(function (a, b) {
+      return a.counter < b.counter;
+    }).forEach((obj) => console.log(obj.message))
+
+  }
+});
 // server.addMethod("log", ({ message }) => console.log(message));
 
 const app = express();

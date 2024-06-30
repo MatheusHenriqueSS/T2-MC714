@@ -1,4 +1,5 @@
 import { JSONRPCClient } from "json-rpc-2.0";
+import { LamportClock } from "./lamport.js";
 
 // JSONRPCClient needs to know how to send a JSON-RPC request.
 // Tell it by passing a function to its constructor. The function must take a JSON-RPC request and send it.
@@ -42,12 +43,16 @@ const client2 = new JSONRPCClient((jsonRPCRequest) =>
 
 // Use client.request to make a JSON-RPC request call.
 // The function returns a promise of the result.
+const lp = new LamportClock();
 const productId = Math.floor(Math.random() * 40)
+lp.increment();
+
+console.log('vai mandar')
 client
-  .request("processSale", { productId })
+  .request("processSale", { productId, counter: lp.getCounter() })
   .then((result) => console.log(result));
 
 client2
-  .request("logging", { message: `Sales processed for product id ${productId}` })
+  .request("logging", { message: `Sales processed for product id ${productId}`, productId, counter: lp.getCounter() })
   .then((result) => console.log(result));
 

@@ -1,4 +1,4 @@
-const LamportClock = class LamportClock {
+export const LamportClock = class LamportClock {
   constructor() {
     this.counter = 0;
   }
