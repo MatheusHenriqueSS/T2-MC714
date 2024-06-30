@@ -44,15 +44,21 @@ const client2 = new JSONRPCClient((jsonRPCRequest) =>
 // Use client.request to make a JSON-RPC request call.
 // The function returns a promise of the result.
 const lp = new LamportClock();
-const productId = Math.floor(Math.random() * 40)
-lp.increment();
 
-console.log('vai mandar')
-client
-  .request("processSale", { productId, counter: lp.getCounter() })
-  .then((result) => console.log(result));
 
-client2
-  .request("logging", { message: `Sales processed for product id ${productId}`, productId, counter: lp.getCounter() })
-  .then((result) => console.log(result));
+for (let i = 0; i < 10; i++) {
+  const productId = Math.floor(Math.random() * 40)
+  lp.increment();
 
+  console.log('vai mandar')
+  client
+    .request("processSale", { productId, counter: lp.getCounter() })
+    .then((result) => console.log(result));
+
+  await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4000)));
+
+  client2
+    .request("logging", { message: `Sales processed for product id ${productId}`, productId, counter: lp.getCounter() })
+    .then((result) => console.log(result));
+
+}

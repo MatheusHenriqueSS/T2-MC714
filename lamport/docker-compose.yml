@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  sales-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: sales-service
+    networks:
+      - service-network
+    ports:
+      - "8081:80"
+    depends_on:
+      - logging-service
+      - product-service
+
+  product-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.product
+    container_name: product-service
+    networks:
+      - service-network
+    ports:
+      - "8082:80"
+    depends_on:
+      - logging-service
+      - invoice-service
+
+  invoice-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.invoice
+    container_name: invoice-service
+    networks:
+      - service-network
+    ports:
+      - "8083:80"
+    depends_on:
+      - logging-service
+
+  logging-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.logging
+    container_name: logging-service
+    networks:
+      - service-network
+    ports:
+      - "8084:80"
+
+networks:
+  service-network:
+    driver: bridge
