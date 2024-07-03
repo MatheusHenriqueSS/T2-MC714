@@ -2,7 +2,7 @@
 
 This project demonstrates a distributed system using Docker containers and WebSocket communication to implement a leader election algorithm. The system ensures that one node is elected as the leader among multiple clients.
 
-This implementation is based on the ring leader election algorithm described [here](https://3ev.medium.com/election-algorithm-a-case-study-7f51a4b059e9). The original sample code from the blog post does not handle communication between clients (it simulates the election within the same code), and it has been converted to JavaScript for this project.
+This implementation is based on the ring leader election algorithm described [here](https://3ev.medium.com/election-algorithm-a-case-study-7f51a4b059e9) and [here](https://www.educative.io/answers/what-is-ring-election-algorithm). The original sample code from the blog post does not handle communication between clients (it simulates the election within the same code), and it has been converted to JavaScript for this project.
 
 This implementation simulates a one-directional ring, meaning in the election procedure, messages are only sent to the next node in the ring. "Next" here refers to the next client in the clients array maintained by the WebSocket server.
 
