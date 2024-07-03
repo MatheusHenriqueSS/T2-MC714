@@ -4,9 +4,18 @@ const { v4: uuidv4 } = require('uuid');
 const wss = new WebSocket.Server({ port: 8080 });
 const clients = new Map();
 
+let clientsCounter = 0;
+
 wss.on('connection', function connection(ws) {
   const clientId = generateUniqueId();
   clients.set(clientId, ws);
+  clientsCounter++;
+
+  wss.clients.forEach(function each(client) {
+    client.send(JSON.stringify({ method: 'updateClientsCounter', value: clientsCounter }));
+  })
+
+
 
 
   ws.on('message', function incoming(message) {
@@ -44,13 +53,16 @@ wss.on('connection', function connection(ws) {
 
   ws.on('close', () => {
     clients.delete(clientId);
+    clientsCounter--;
+
+    wss.clients.forEach(function each(client) {
+      client.send(JSON.stringify({ method: 'updateClientsCounter', value: clientsCounter }));
+    })
   });
 
 
   ws.send(JSON.stringify({ method: 'welcome', data: 'Welcome to the WebSocket server!', clientId }));
 });
-
-console.log('WebSocket server is not running on ws://localhost:8080');
 
 function sendReply(clientId, method, data) {
   const clientWs = clients.get(clientId);

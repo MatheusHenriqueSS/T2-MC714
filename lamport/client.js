@@ -50,7 +50,7 @@ for (let i = 0; i < 10; i++) {
   const productId = Math.floor(Math.random() * 40)
   lp.increment();
 
-  console.log('vai mandar')
+  console.log('sent sale event')
   client
     .request("processSale", { productId, counter: lp.getCounter() })
     .then((result) => console.log(result));

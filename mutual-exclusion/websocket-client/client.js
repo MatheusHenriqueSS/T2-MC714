@@ -9,6 +9,7 @@ const requests = new Queue();
 let requested = false;
 let clientId = null;
 let auth = 0;
+let clientsCounter;
 
 function executeWithRandomDelay(fn) {
   // Helper function to get a random delay between 30s (30000ms) and 2m (120000ms)
@@ -33,7 +34,6 @@ function executeWithRandomDelay(fn) {
 }
 
 const makeRequest = () => {
-  console.log('sent request')
   sendMessage('request', null);
   requested = true;
   requests.enqueue({ counter: lp.getCounter(), clientId })
@@ -46,12 +46,10 @@ const reply = (timestamp, senderId) => {
 }
 
 const checkRelease = () => {
-  console.log('entrou na release')
-  console.log(requests.returnQueue());
-  if (auth == 2 && !requests.isEmpty() && requests.peek().clientId === clientId) {
+  if (auth == clientsCounter - 1 && !requests.isEmpty() && requests.peek().clientId === clientId) {
     auth = 0;
     requested = false;
-    console.log('EXECUTOU ESSA PORRA!')
+    console.log('finished critical state')
     sendMessage('release', null)
   }
 }
@@ -89,7 +87,6 @@ function handleIncomingMessage(messageString) {
       break;
 
     case 'request':
-      console.log('received request')
       if (message.senderId !== clientId) reply(message.timestamp, message.senderId)
       break;
 
@@ -102,6 +99,9 @@ function handleIncomingMessage(messageString) {
       requests.dequeue();
       checkRelease();
       break;
+    case 'updateClientsCounter':
+      clientsCounter = message.value;
+      break
 
     // Handle other methods
     default:
