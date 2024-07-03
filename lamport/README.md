@@ -28,8 +28,10 @@ The provided docker-compose.yml file defines four services: sales-service, produ
 ## Running the System
 This system was implemented using Docker containers, to run it you can use the `docker-compose.yml` file to set up network, build the images, and define service names 
 1. Build and start the services:
-```docker-compose up --build```
-
+     ```sh
+     docker-compose up --build --scale websocket-client=n
+     ```
+     Where `n` is the number of clients you want in the system
 2. The Sales Service will start sending requests to the Product Service and Logging Service, simulating sales processes.
 
 ## Code Explanation
