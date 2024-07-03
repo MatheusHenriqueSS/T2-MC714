@@ -1,0 +1,20 @@
+version: '3'
+services:
+  websocket-server:
+    build: ./websocket-server
+    networks:
+      - websocket-network
+    ports:
+      - "8080:8080"
+
+  websocket-client:
+    build: ./websocket-client
+    depends_on:
+      - websocket-server
+    networks:
+      - websocket-network
+
+networks:
+  websocket-network:
+    external: true
+  
