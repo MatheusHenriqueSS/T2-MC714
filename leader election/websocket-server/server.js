@@ -18,9 +18,6 @@ wss.on('connection', function connection(ws) {
       case 'greeting':
         sendReply(senderId, 'response', 'Hello, client!');
         break;
-      case 'sendToNextNode':
-        handleSendToNextNode(senderId, parsedMessage);
-        break;
       case 'election':
         handleSendToNextNode(senderId, parsedMessage)
         break;

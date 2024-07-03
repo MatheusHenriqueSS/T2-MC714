@@ -35,15 +35,13 @@ function handleIncomingMessage(messageString) {
       console.log(`clientId: ${clientId} has rank ${rank}`)
       // setTimeout(() => executeWithRandomDelay(makeRequest), 60000);
       break;
-    case 'sendToNextNode':
-      console.log(`${clientId} received from ${message.senderId}`)
-      break
     case 'election':
       handleElection(message.data.ranks)
       break
     case 'newLeader':
       leaderId = message.data.leaderId;
-      console.log(`${clientId} recognizes ${leaderId} as the new leader`)
+      if (leaderId === clientId) console.log('yay i am the leader')
+      else console.log(`${clientId} recognizes ${leaderId} as the new leader`)
       break;
     case 'checkLeader':
       sendMessage('answerLeader', { destinationId: message.senderId })
@@ -81,7 +79,6 @@ const handleElection = (ranks) => {
     }
     havingElection = false;
     console.log(ranks);
-    console.log(curClient)
     sendMessage('newLeader', { leaderId: curClient })
   }
   else {
