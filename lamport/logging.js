@@ -12,13 +12,14 @@ const server = new JSONRPCServer();
 const skus = {};
 
 server.addMethod("logging", ({ message, productId, counter }) => {
-
+  console.log('message received: ', message);
   if (!skus[productId]) skus[productId] = [];
   skus[productId].push({ message, productId, counter });
 
   if (skus[productId].length === 3) {
+    console.log('logging results:')
     skus[productId].sort(function (a, b) {
-      return a.counter < b.counter;
+      return a.counter - b.counter
     }).forEach((obj) => console.log(obj.message))
 
   }
